@@ -3,7 +3,7 @@
             cy.visit('https://www.saucedemo.com/v1/index.html')
         })
 
-        it('TSD-001-User Menginputkan Username dan Password dengan benar', () => {
+        it.only('TSD-001-User Menginputkan Username dan Password dengan benar', () => {
             // cy.visit('https://www.saucedemo.com/v1/index.html')
             cy.url().should('include','saucedemo')
             cy.title().should('include','Swag Labs')
@@ -14,8 +14,13 @@
             cy.xpath('//input[@id="password"]').should('be.visible')
             cy.xpath('//input[@id="password"]').clear().type('secret_sauce').should('have.value','secret_sauce')
 
+            // cy.intercept ('GET','https://www.saucedemo.com/v1/img/SwagLabs_logo.png').as('loginRequest');
+            cy.intercept ('GET','https://www.saucedemo.com/v1/img/twitter.png').as('loginRequest');
+
             cy.get('.btn_action').should('be.visible')
             cy.get('.btn_action').click()
+
+            cy.wait('@loginRequest').its('response.statusCode').should('eq',200);
 
             cy.url().should('include','/inventory.html')
         })
